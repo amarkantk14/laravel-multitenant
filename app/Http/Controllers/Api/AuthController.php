@@ -84,11 +84,12 @@ class AuthController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getDetails()
+    public function getDetails(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if($user) {
             return response()->json(['success' => true, 'user' => $user], $this->successStatus);
         }

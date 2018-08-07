@@ -2,7 +2,6 @@
 namespace App\Http\Traits;
 
 use Orchestra\Support\Facades\Tenanti;
-
 trait UserDriverTrait
 {
     protected $db_prefix;

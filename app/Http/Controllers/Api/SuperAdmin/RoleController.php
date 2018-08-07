@@ -1,12 +1,23 @@
 <?php
-
-namespace App\Http\Controllers;
-
-use App\Permission;
+namespace App\Http\Controllers\Api\SuperAdmin;
+use App\Http\Controllers\Controller;
+use App\Http\Traits\AuthTrait;
+use App\Http\Traits\UserDriverTrait;
+use App\Role;
 use Illuminate\Http\Request;
 
-class PermissionController extends Controller
+class RoleController extends Controller
 {
+    use UserDriverTrait, AuthTrait;
+    use UserDriverTrait {
+        UserDriverTrait::__construct as private __pConstruct;
+    }
+
+    public function __construct()
+    {
+        $this->__pConstruct();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +25,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        return $this->isSuperAdmin() ? Role::all(['id','name']) : [];
     }
 
     /**
@@ -41,10 +52,10 @@ class PermissionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Permission  $permission
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Permission $permission)
+    public function show(Role $role)
     {
         //
     }
@@ -52,10 +63,10 @@ class PermissionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Permission  $permission
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function edit(Permission $permission)
+    public function edit(Role $role)
     {
         //
     }
@@ -64,10 +75,10 @@ class PermissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Permission  $permission
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Permission $permission)
+    public function update(Request $request, Role $role)
     {
         //
     }
@@ -75,10 +86,10 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Permission  $permission
+     * @param  \App\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Permission $permission)
+    public function destroy(Role $role)
     {
         //
     }
