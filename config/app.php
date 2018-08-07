@@ -185,7 +185,8 @@ return [
         App\Providers\StoreServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         App\Providers\TenantImageServiceProvider::class,
-        Laravel\Passport\PassportServiceProvider::class
+        Laravel\Passport\PassportServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*

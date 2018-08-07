@@ -110,3 +110,5 @@ class AuthController extends Controller
 //    'Accept' => 'application/json',
 //    'Authorization' => 'Bearer '.$accessToken,
 //]
+
+// https://tutsforweb.com/laravel-passport-create-rest-api-with-authentication/

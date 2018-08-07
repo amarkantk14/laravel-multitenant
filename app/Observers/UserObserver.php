@@ -24,13 +24,17 @@ class UserObserver extends Observer
          * To create database on the user creation
          *
          */
+        if ($entity->is_super_admin){} else {
+            $this->createTenantDatabase($entity);
+        }
 
-        $this->createTenantDatabase($entity);
 
         /**
          * To create all migration
          */
-        parent::created($entity);
+        if ($entity->is_super_admin){} else {
+            parent::created($entity);
+        }
     }
 
     /**
