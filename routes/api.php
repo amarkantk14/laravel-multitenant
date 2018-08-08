@@ -19,6 +19,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function (){
     Route::get('permissions', 'Api\SuperAdmin\PermissionController@index');
     Route::post('permissions', 'Api\SuperAdmin\PermissionController@store');
     Route::get('assign-permission', 'Api\SuperAdmin\PermissionController@assignPermission');
+    Route::post('tenant-permission', 'Api\SuperAdmin\PermissionController@tenantPermission');
 });
 
 Route::group(['prefix' => 'tenant', 'middleware' => 'auth:api'], function (){
@@ -26,6 +27,7 @@ Route::group(['prefix' => 'tenant', 'middleware' => 'auth:api'], function (){
     Route::post('roles', 'Api\Tenant\RoleController@store');
     Route::get('permissions', 'Api\Tenant\PermissionController@index');
     Route::post('permissions', 'Api\Tenant\PermissionController@store');
+    Route::post('assign-permission', 'Api\Tenant\PermissionController@assignPermission');
 });
 
 Route::middleware('auth:api')->group(function () {

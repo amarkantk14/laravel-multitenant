@@ -93,4 +93,9 @@ class PermissionController extends Controller
     {
         //
     }
+
+    public function assignPermission(Request $request)
+    {
+        return $request->all();
+    }
 }

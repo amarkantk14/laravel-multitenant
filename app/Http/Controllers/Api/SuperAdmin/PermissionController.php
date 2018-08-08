@@ -5,6 +5,7 @@ use App\Http\Traits\AuthTrait;
 use App\Http\Traits\UserDriverTrait;
 use App\Permission;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -119,6 +120,51 @@ class PermissionController extends Controller
                 'message' => 'Successfully assigned role and permission',
                 'result' => $user
             ]);
+        }
+        return [];
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function tenantPermission (Request $request) {
+        $this->validate($request, [
+            'user_id' => 'required',
+            'role_id' => 'required',
+            'permissions[*].id' => 'required'
+        ]);
+
+        if ($this->isSuperAdmin()) {
+            $input = $request->all();
+            if(isset($input) && !empty($input) && is_numeric($input['user_id'])) {
+                $user = User::select('id', 'name')
+                    ->where('id', $input['user_id'])
+                    ->where('is_admin', 1)
+                    ->firstOrFail();
+
+                $role = Role::where('id', $input['role_id'])->firstOrFail();
+                if ($user->hasRole($role->name)) {
+                    $user->removeRole($role->name);
+                }
+
+                if (isset($input['permissions']) && !empty($input['permissions'])) {
+                    $permissions = Permission::whereIn('id', $input['permissions'])->get();
+                    if (isset($permissions) && !empty($permissions)) {
+                        foreach ($permissions as $permission) {
+                            $role->revokePermissionTo($permission);
+                        }
+                        $role->syncPermissions($permissions);
+                    }
+                    $user->assignRole($role);
+                    $user['permissions'] =  [$user->getAllPermissions()];
+                    unset($user['permissions']);
+                    return response()->json([
+                        'message' => 'Successfully assigned role and permission',
+                        'result' => $user
+                    ]);
+                }
+            }
         }
         return [];
     }
