@@ -18,4 +18,9 @@ trait AuthTrait
     public function isSuperAdmin() {
         return Auth::user()->is_super_admin == true;
     }
+
+    public function loggedInUser()
+    {
+        return Auth::user();
+    }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\AuthTrait;
 use App\Http\Traits\UserDriverTrait;
 use App\Permission;
+use App\Role;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -92,5 +93,33 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         //
+    }
+
+    /**
+     *
+     */
+    public function assignPermission () {
+        if ($this->isSuperAdmin()) {
+            $user = $this->loggedInUser();
+            if ($user->hasRole(Role::SUPER_ADMIN_NAME)) {
+                $user->removeRole(Role::SUPER_ADMIN_NAME);
+            }
+            $role = Role::where('id', '=', Role::SUPER_ADMIN_ID)->firstOrFail();
+            $permissions = Permission::all();
+            if (isset($permissions) && !empty($permissions)) {
+                foreach ($permissions as $permission) {
+                    $role->revokePermissionTo($permission);
+                }
+                $role->syncPermissions($permissions);
+            }
+            $user->assignRole($role);
+            $user['permissions'] =  [$user->getAllPermissions()];
+            unset($user['permissions']);
+            return response()->json([
+                'message' => 'Successfully assigned role and permission',
+                'result' => $user
+            ]);
+        }
+        return [];
     }
 }
