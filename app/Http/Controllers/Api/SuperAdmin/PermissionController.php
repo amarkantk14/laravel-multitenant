@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\AuthTrait;
+use App\Http\Traits\RolePermissionTrait;
 use App\Http\Traits\UserDriverTrait;
 use App\Permission;
 use App\Role;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    use UserDriverTrait, AuthTrait;
+    use UserDriverTrait, AuthTrait, RolePermissionTrait;
     use UserDriverTrait {
         UserDriverTrait::__construct as private __pConstruct;
     }
@@ -130,14 +131,14 @@ class PermissionController extends Controller
      */
     public function tenantPermission (Request $request) {
         $this->validate($request, [
-            'user_id' => 'required',
-            'role_id' => 'required',
-            'permissions[*].id' => 'required'
+            'user_id' => 'required|numeric',
+            'role_id' => 'required|numeric',
+            'permissions.*' => 'required|distinct|numeric'
         ]);
 
         if ($this->isSuperAdmin()) {
             $input = $request->all();
-            if(isset($input) && !empty($input) && is_numeric($input['user_id'])) {
+            if(is_numeric($input['user_id'])) {
                 $user = User::select('id', 'name')
                     ->where('id', $input['user_id'])
                     ->where('is_admin', 1)
@@ -150,7 +151,7 @@ class PermissionController extends Controller
 
                 if (isset($input['permissions']) && !empty($input['permissions'])) {
                     $permissions = Permission::whereIn('id', $input['permissions'])->get();
-                    if (isset($permissions) && !empty($permissions)) {
+                    if (!$permissions->isEmpty()) {
                         foreach ($permissions as $permission) {
                             $role->revokePermissionTo($permission);
                         }
@@ -167,5 +168,24 @@ class PermissionController extends Controller
             }
         }
         return [];
+    }
+
+    /**
+     * Function to assign permission to to given role
+     * @param Request $request
+     * @return array
+     */
+    public function assignPermissionToRole(Request $request)
+    {
+        $this->validate($request, [
+            'roles.*' => 'required|distinct|numeric',
+            'permissions.*' => 'required|distinct'
+        ]);
+
+        if ($this->isSuperAdmin()) {
+            $input = $request->all();
+            $result = $this->assignPermissionsToRoles($input['roles'], $input['permissions']);
+            return $result;
+        }
     }
 }
