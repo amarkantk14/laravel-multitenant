@@ -104,11 +104,6 @@ class AuthController extends Controller
             'message' => 'Successfully logged out'
         ]);
     }
-
-    public function registerUser(Request $request)
-    {
-        return ['aa'];
-    }
 }
 
 //

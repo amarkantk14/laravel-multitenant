@@ -26,15 +26,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:api'], function (){
 Route::group(['prefix' => 'tenant', 'middleware' => 'auth:api'], function (){
     Route::get('roles', 'Api\Tenant\RoleController@index');
     Route::post('roles', 'Api\Tenant\RoleController@store');
+
     Route::get('permissions', 'Api\Tenant\PermissionController@index');
     Route::post('permissions', 'Api\Tenant\PermissionController@store');
     Route::post('assign-permission', 'Api\Tenant\PermissionController@assignPermission');
-    Route::get('user', 'Api\AuthController@registerUser');
+
+    Route::get('user', 'Api\UserController@index');
+    Route::post('user', 'Api\UserController@store');
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('user', 'Api\UserController@index');
-    Route::post('user', 'Api\UserController@store');
     Route::post('details', 'Api\AuthController@getDetails');
     Route::get('logout', 'Api\AuthController@logout');
 
