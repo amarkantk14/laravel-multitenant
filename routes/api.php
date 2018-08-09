@@ -29,6 +29,7 @@ Route::group(['prefix' => 'tenant', 'middleware' => 'auth:api'], function (){
     Route::get('permissions', 'Api\Tenant\PermissionController@index');
     Route::post('permissions', 'Api\Tenant\PermissionController@store');
     Route::post('assign-permission', 'Api\Tenant\PermissionController@assignPermission');
+    Route::get('user', 'Api\AuthController@registerUser');
 });
 
 Route::middleware('auth:api')->group(function () {
