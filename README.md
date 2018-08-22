@@ -1,2 +1,1 @@
 # laravel-multitenant
-# laravel-multitenant
